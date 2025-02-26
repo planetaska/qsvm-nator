@@ -1,0 +1,21 @@
+# Ignore the virtual environment directory
+.venv/
+
+# Ignore Python bytecode files
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore dependency metadata
+Pipfile
+Pipfile.lock
+poetry.lock
+
+# Ignore editor and OS-specific files
+.vscode/
+.idea/
+.DS_Store
+
+# Ignore logs and environment files
+*.log
+.env
