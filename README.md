@@ -20,6 +20,7 @@ QSVM-nator is a comprehensive tool for comparing classical Support Vector Machin
 - numpy
 - matplotlib
 - pandas
+- python-dotenv (Optional - if you want to run the program on a real quantum computer through IBM Quantum Runtime Service)
 
 ## Installation
 
@@ -34,6 +35,10 @@ source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
+
+# Optional - setup IBM Quantum Runtime
+# Assuming you have saved your runtime token as IBM_RUNTIME_TOKEN in .evn file
+python3 save-runtime.py
 ```
 
 ## Usage
@@ -53,11 +58,14 @@ The project includes:
 
 ```
 qsvm-nator/
-├── data/               # Dataset storage
+├── datasets/           # Dataset storage
+├── plots/              # Generated plots
 ├── examples/           # Example scripts
 ├── tests/              # Unit tests
 ├── requirements.txt    # Package dependencies
 ├── main.py             # Program entry
+├── utils.py            # Utilities
+├── save-runtime.py     # IBM Runtime setup (optional)
 ├── LICENSE             # License file
 └── README.md           # This file
 ```

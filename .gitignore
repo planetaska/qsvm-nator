@@ -19,3 +19,7 @@ poetry.lock
 # Ignore logs and environment files
 *.log
 .env
+
+# Ignore generated plots
+plots/*
+!.gitkeep
