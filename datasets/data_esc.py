@@ -16,6 +16,8 @@ from sklearn.decomposition import PCA
 import pickle
 from pathlib import Path
 from tqdm import tqdm
+from matplotlib import cm
+from mpl_toolkits.mplot3d import Axes3D  # Import for 3D plotting
 
 warnings.filterwarnings("ignore")
 
@@ -588,29 +590,197 @@ def _process_features(X, y, n_components, plot_data=True, label_names=None):
         print(f"Created test_input with keys {list(test_input.keys())}")
 
         if plot_data:
-            plt.figure(figsize=(10, 6))
-            for k in np.unique(y):
-                try:
-                    x_axis_data = X_train[y_train == k, 0]
-                    y_axis_data = X_train[y_train == k, 1]
-                    plt.scatter(x_axis_data, y_axis_data, label=label_names[k])
-                except Exception as e:
-                    print(f"Warning: Could not plot data for class {k}: {str(e)}")
+            # Create plot directory if it doesn't exist
+            plots_dir = os.path.join(os.getcwd(), "plots")
+            os.makedirs(plots_dir, exist_ok=True)
 
-            plt.title(f"ESC Dataset (Dimensionality Reduced With PCA)")
+            # Determine if we should create a 2D or 3D plot
+            if n_components == 3:
+                # Create a list to store individual plot paths for logging
+                plot_paths = []
 
-            # Place legend outside of the plot area
-            plt.legend(bbox_to_anchor=(1.05, 1), loc="upper left", borderaxespad=0.0)
+                # First, create a single detailed 3D plot with legend
+                fig_main = plt.figure(figsize=(12, 10))
+                ax_main = fig_main.add_subplot(111, projection="3d")
 
-            # Add more space on the right for the legend
-            plt.tight_layout(rect=[0, 0, 0.85, 1])
+                # Plot the data points
+                for k in np.unique(y):
+                    try:
+                        x_data = X_train[y_train == k, 0]
+                        y_data = X_train[y_train == k, 1]
+                        z_data = X_train[y_train == k, 2]
+                        ax_main.scatter(
+                            x_data,
+                            y_data,
+                            z_data,
+                            label=label_names[k],
+                            s=30,
+                            alpha=0.7,
+                        )
+                    except Exception as e:
+                        print(
+                            f"Warning: Could not plot 3D data for class {k}: {str(e)}"
+                        )
 
-            # Save the plot
-            plot_path = os.path.join("plots", f"esc_{n_components}d_pca_plot.png")
-            plt.savefig(plot_path)
-            plt.close()
+                # Set labels with increased padding to avoid cut-off
+                ax_main.set_xlabel("PCA Component 1", labelpad=15)
+                ax_main.set_ylabel("PCA Component 2", labelpad=15)
+                ax_main.set_zlabel("PCA Component 3", labelpad=15)
+                ax_main.set_title(f"ESC Dataset (3D PCA Visualization)")
 
-            print(f"📊 Plot generated and saved to: {os.path.abspath(plot_path)}")
+                # Add legend outside the plot
+                ax_main.legend(bbox_to_anchor=(1.15, 1), loc="upper left")
+
+                # Set the view angle for best visibility
+                ax_main.view_init(elev=30, azim=45)
+
+                # Adjust figure margins to avoid cut-off
+                plt.subplots_adjust(left=0.05, right=0.85, bottom=0.05, top=0.95)
+
+                # Save the main 3D plot
+                main_plot_path = os.path.join(plots_dir, f"esc_3d_pca_plot_main.png")
+                plt.savefig(main_plot_path, bbox_inches="tight", dpi=120)
+                plot_paths.append(main_plot_path)
+                plt.close(fig_main)
+
+                # Now create a figure with one 3D plot and three 2D projections
+                fig_multi = plt.figure(figsize=(16, 14))
+
+                # 1. Top-left subplot: 3D plot with a good viewing angle
+                ax1 = fig_multi.add_subplot(2, 2, 1, projection="3d")
+
+                for k in np.unique(y):
+                    try:
+                        x_data = X_train[y_train == k, 0]
+                        y_data = X_train[y_train == k, 1]
+                        z_data = X_train[y_train == k, 2]
+                        ax1.scatter(
+                            x_data,
+                            y_data,
+                            z_data,
+                            label=label_names[k],
+                            s=20,
+                            alpha=0.7,
+                        )
+                    except Exception as e:
+                        print(f"Warning: Could not plot data for class {k}: {str(e)}")
+
+                # Set the 3D view with increased padding for labels
+                ax1.set_xlabel("PCA Component 1", labelpad=15)
+                ax1.set_ylabel("PCA Component 2", labelpad=15)
+                ax1.set_zlabel("PCA Component 3", labelpad=15)
+                ax1.set_title("3D View (Components 1-2-3)")
+                ax1.view_init(elev=30, azim=45)
+
+                # Only add legend to the 3D plot
+                ax1.legend(loc="upper right", fontsize="small")
+
+                # 2. Top-right subplot: 2D plot of Components 1 vs 2
+                ax2 = fig_multi.add_subplot(2, 2, 2)
+
+                for k in np.unique(y):
+                    try:
+                        x_data = X_train[y_train == k, 0]
+                        y_data = X_train[y_train == k, 1]
+                        ax2.scatter(
+                            x_data, y_data, label=label_names[k], s=20, alpha=0.7
+                        )
+                    except Exception as e:
+                        print(f"Warning: Could not plot data for class {k}: {str(e)}")
+
+                ax2.set_xlabel("PCA Component 1")
+                ax2.set_ylabel("PCA Component 2")
+                ax2.set_title("2D Projection (Components 1-2)")
+                ax2.grid(True, linestyle="--", alpha=0.7)
+
+                # 3. Bottom-left subplot: 2D plot of Components 1 vs 3
+                ax3 = fig_multi.add_subplot(2, 2, 3)
+
+                for k in np.unique(y):
+                    try:
+                        x_data = X_train[y_train == k, 0]
+                        z_data = X_train[y_train == k, 2]
+                        ax3.scatter(
+                            x_data, z_data, label=label_names[k], s=20, alpha=0.7
+                        )
+                    except Exception as e:
+                        print(f"Warning: Could not plot data for class {k}: {str(e)}")
+
+                ax3.set_xlabel("PCA Component 1")
+                ax3.set_ylabel("PCA Component 3")
+                ax3.set_title("2D Projection (Components 1-3)")
+                ax3.grid(True, linestyle="--", alpha=0.7)
+
+                # 4. Bottom-right subplot: 2D plot of Components 2 vs 3
+                ax4 = fig_multi.add_subplot(2, 2, 4)
+
+                for k in np.unique(y):
+                    try:
+                        y_data = X_train[y_train == k, 1]
+                        z_data = X_train[y_train == k, 2]
+                        ax4.scatter(
+                            y_data, z_data, label=label_names[k], s=20, alpha=0.7
+                        )
+                    except Exception as e:
+                        print(f"Warning: Could not plot data for class {k}: {str(e)}")
+
+                ax4.set_xlabel("PCA Component 2")
+                ax4.set_ylabel("PCA Component 3")
+                ax4.set_title("2D Projection (Components 2-3)")
+                ax4.grid(True, linestyle="--", alpha=0.7)
+
+                # Adjust layout with better spacing
+                plt.tight_layout(pad=4.0)
+
+                # Save the multi-view plot
+                multi_plot_path = os.path.join(plots_dir, f"esc_3d_pca_projections.png")
+                plt.savefig(multi_plot_path, bbox_inches="tight", dpi=120)
+                plot_paths.append(multi_plot_path)
+                plt.close(fig_multi)
+
+                # Log all the plot paths
+                for path in plot_paths:
+                    print(f"📊 3D Plot generated and saved to: {os.path.abspath(path)}")
+            else:
+                # Create a 2D plot (existing code)
+                plt.figure(figsize=(10, 7))
+
+                # Plot data points
+                for k in np.unique(y):
+                    try:
+                        x_axis_data = X_train[y_train == k, 0]
+                        y_axis_data = X_train[y_train == k, 1]
+                        plt.scatter(x_axis_data, y_axis_data, label=label_names[k])
+                    except Exception as e:
+                        print(
+                            f"Warning: Could not plot 2D data for class {k}: {str(e)}"
+                        )
+
+                plt.title(f"ESC Dataset (2D PCA Visualization)")
+
+                # Add axis labels
+                plt.xlabel("PCA Component 1")
+                plt.ylabel("PCA Component 2")
+
+                # Place legend outside of the plot area with better positioning
+                plt.legend(
+                    bbox_to_anchor=(1.02, 1), loc="upper left", borderaxespad=0.0
+                )
+
+                # Add grid for better readability
+                plt.grid(True, linestyle="--", alpha=0.7)
+
+                # Use tight layout for better overall spacing
+                plt.tight_layout()
+
+                # Save the plot with bbox_inches='tight' to remove excess white space
+                plot_path = os.path.join(plots_dir, f"esc_{n_components}d_pca_plot.png")
+                plt.savefig(plot_path, bbox_inches="tight", dpi=100)
+                plt.close()
+
+                print(
+                    f"📊 2D Plot generated and saved to: {os.path.abspath(plot_path)}"
+                )
 
         return X_train, training_input, test_input, list(label_names.values())
 
@@ -686,22 +856,45 @@ def main():
     print()
 
     try:
-        print("🔍 Loading ESC10 dataset from pre-processed files...")
+        # Test 2D visualization
+        print("🔍 Testing 2D visualization (n_components=2)...")
         X, y, metadata = _load_features("esc10")
-        print(f"✅ Successfully loaded features: X shape {X.shape}, y shape {y.shape}")
-
-        print("\n🔄 Processing features...")
-        X_train, training_input, test_input, class_labels = _process_features(
-            X, y, n_components=2, plot_data=True, label_names=metadata["label_names"]
+        print(
+            f"✅ Successfully loaded features for 2D: X shape {X.shape}, y shape {y.shape}"
         )
-        print(f"✅ Successfully processed features")
-        print(f"Class labels: {class_labels}")
-        print(f"X_train shape: {X_train.shape}")
+
+        print("\n🔄 Processing features for 2D visualization...")
+        X_train_2d, training_input_2d, test_input_2d, class_labels_2d = (
+            _process_features(
+                X,
+                y,
+                n_components=2,
+                plot_data=True,
+                label_names=metadata["label_names"],
+            )
+        )
+        print(f"✅ Successfully processed features for 2D visualization")
+
+        # Test 3D visualization
+        print("\n🔍 Testing 3D visualization (n_components=3)...")
+        print("\n🔄 Processing features for 3D visualization...")
+        X_train_3d, training_input_3d, test_input_3d, class_labels_3d = (
+            _process_features(
+                X,
+                y,
+                n_components=3,
+                plot_data=True,
+                label_names=metadata["label_names"],
+            )
+        )
+        print(f"✅ Successfully processed features for 3D visualization")
 
         # Print example of how to use the dataset
         print("\nUse this file like this:\n")
+        print("# For 2D visualization:")
         print("X_train, training_input, test_input, class_labels = esc10(2)")
-        print("X_train, training_input, test_input, class_labels = esc50(2)")
+        print("\n# For 3D visualization:")
+        print("X_train, training_input, test_input, class_labels = esc10(3)")
 
     except Exception as e:
         print(f"❌ An error occurred: {repr(e)}")
