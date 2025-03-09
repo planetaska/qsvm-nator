@@ -1,16 +1,13 @@
 import os
 import numpy as np
-import scipy
-from scipy.linalg import expm
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.decomposition import PCA
 
 
-def breast_cancer(training_size, test_size, n, PLOT_DATA=True):
+def breast_cancer(training_size, test_size, n, plot_dir, PLOT_DATA=True):
     class_labels = [r'Benign', r'Malignant']
 
     # First the dataset must be imported.
@@ -58,7 +55,7 @@ def breast_cancer(training_size, test_size, n, PLOT_DATA=True):
 
         plt.title("Breast Cancer Dataset (Dimensionality Reduced With PCA)")
         plt.legend()
-        plt.savefig(os.path.join("plots", "01.breast_cancer_pca_plot.png"))  # Save the plot as a file
+        plt.savefig(os.path.join(plot_dir, "01.breast_cancer_pca_plot.png"))  # Save the plot as a file
         # plt.show()
 
     return X_train, training_input, test_input, class_labels
