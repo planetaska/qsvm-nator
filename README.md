@@ -44,10 +44,16 @@ python3 save-runtime.py
 ## Usage
 
 ```bash
-# Run main.py to access a text-based UI for running experiments
+# Interactive Mode: Run main.py without arguments to get a menu interface
 python3 main.py
 
-# Or, run each experiment separately
+# Direct Mode: execute experiment #2 directly (AdHoc QSVC)
+python3 main.py 2
+
+# With Arguments: pass arguments to experiment (currently no argument is supported)
+python3 main.py 3 arg1 arg2
+
+# Or, run each experiment independently
 python3 exp_wdbc/wdbc.py
 python3 exp_adhoc/ah1_qsvc.py
 ```
