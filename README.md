@@ -30,7 +30,7 @@ git clone https://github.com/yourusername/qsvm-nator.git
 cd qsvm-nator
 
 # Create a virtual environment (optional but recommended)
-python -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 
 # Install dependencies
@@ -43,8 +43,19 @@ python3 save-runtime.py
 
 ## Usage
 
-```python
-# Coming soon
+```bash
+# Interactive Mode: Run main.py without arguments to get a menu interface
+python3 main.py
+
+# Direct Mode: execute experiment #2 directly (AdHoc QSVC)
+python3 main.py 2
+
+# With Arguments: pass arguments to experiment (currently no argument is supported)
+python3 main.py 3 arg1 arg2
+
+# Or, run each experiment independently
+python3 exp_wdbc/wdbc.py
+python3 exp_adhoc/ah1_qsvc.py
 ```
 
 ## Datasets
@@ -59,8 +70,9 @@ The project includes:
 ```
 qsvm-nator/
 ├── datasets/           # Dataset storage
+├── exp_adhoc/          # AdHoc data experiments
+├── exp_wdbc/           # WDBC data experiments
 ├── plots/              # Generated plots
-├── examples/           # Example scripts
 ├── tests/              # Unit tests
 ├── requirements.txt    # Package dependencies
 ├── main.py             # Program entry
