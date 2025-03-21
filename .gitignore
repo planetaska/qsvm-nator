@@ -23,3 +23,7 @@ poetry.lock
 # Ignore generated plots
 plots/*
 !.gitkeep
+
+# Raw dataset storage
+/datasets/data
+

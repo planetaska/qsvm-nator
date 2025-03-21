@@ -19,16 +19,21 @@ class ExperimentFacade:
                 "description": "Wisconsin Diagnostic Breast Cancer dataset experiment"
             },
             2: {
+                "name": "ESC",
+                "path": os.path.join(self.base_dir, "exp_esc", "esc.py"),
+                "description": "Environmental Sound Classification dataset experiment"
+            },
+            3: {
                 "name": "AdHoc QSVC",
                 "path": os.path.join(self.base_dir, "exp_adhoc", "ah1_qsvc.py"),
                 "description": "Ad Hoc experiment with Quantum Support Vector Classification"
             },
-            3: {
+            4: {
                 "name": "AdHoc Cluster",
                 "path": os.path.join(self.base_dir, "exp_adhoc", "ah2_cluster.py"),
                 "description": "Ad Hoc experiment with Clustering"
             },
-            4: {
+            5: {
                 "name": "AdHoc KPCA",
                 "path": os.path.join(self.base_dir, "exp_adhoc", "ah3_kpca.py"),
                 "description": "Ad Hoc experiment with Kernel Principal Component Analysis"
