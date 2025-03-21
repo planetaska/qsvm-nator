@@ -70,8 +70,9 @@ The project includes:
 ```
 qsvm-nator/
 ├── datasets/           # Dataset storage
-├── exp_adhoc/          # AdHoc data experiments
-├── exp_wdbc/           # WDBC data experiments
+├── exp_adhoc/          # AdHoc dataset experiments
+├── exp_esc/            # ESC dataset experiments
+├── exp_wdbc/           # WDBC dataset experiments
 ├── plots/              # Generated plots
 ├── tests/              # Unit tests
 ├── requirements.txt    # Package dependencies
