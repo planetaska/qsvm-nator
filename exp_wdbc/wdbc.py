@@ -123,6 +123,7 @@ if use_simulator:
     from qiskit.primitives import StatevectorSampler as Sampler
     backend = AerSimulator()
     sampler = Sampler()
+    print("Using quantum simulator")
 else:
     # Make sure you have saved your token by running save-runtime.py once.
     # If you did not previously save your credentials, use the following line instead:
@@ -132,6 +133,7 @@ else:
 
     from qiskit_ibm_runtime import SamplerV2 as SamplerV2  # for IBM Runtime
     sampler = SamplerV2(backend)
+    print("Using real quantum computer")
 
 # Setup quantum circuit
 # from qiskit import QuantumCircuit

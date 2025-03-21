@@ -3,6 +3,7 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn import svm
+from mlxtend.plotting import plot_decision_regions
 
 # Set up the global seed to ensure reproducibility
 from qiskit_machine_learning.utils import algorithm_globals
@@ -80,6 +81,11 @@ if __name__ == "__main__":
     print(f"Accuracy on the training set: {lin_acc_train:.2f}")
     print(f"Accuracy on the test set: {lin_acc_test:.2f}")
 
+    fig = plot_decision_regions(X=data_test[0], y=data_test[1], clf=clf, legend=2)
+    plt.title("Linear SVM")
+    plt.savefig(os.path.join(plot_dir, "01.esc_linear_svm_results.png"))
+    # plt.show()
+
     # Define a Gaussian SVM and train it on the dataset
     clf = svm.SVC(kernel="rbf", gamma="scale")
     print("Training Gaussian SVM")
@@ -88,6 +94,11 @@ if __name__ == "__main__":
     gauss_acc_test = clf.score(data_test[0], data_test[1])
     print(f"Accuracy on the training set: {gauss_acc_train:.2f}")
     print(f"Accuracy on the test set: {gauss_acc_test:.2f}")
+
+    fig = plot_decision_regions(X=data_test[0], y=data_test[1], clf=clf, legend=2)
+    plt.title("Gaussian SVM")
+    plt.savefig(os.path.join(plot_dir, "02.esc_gaussian_svm_results.png"))
+    # plt.show()
 
     # Create the feature map
     feature_map = z_feature_map(feature_dimension=n, reps=1, entanglement="linear")
@@ -102,4 +113,9 @@ if __name__ == "__main__":
     qsvc_acc_test = qsvc.score(data_test[0], data_test[1])
     print(f"Accuracy on the training set: {qsvc_acc_train:.2f}")
     print(f"Accuracy on the test set: {qsvc_acc_test:.2f}")
+
+    fig = plot_decision_regions(X=data_test[0], y=data_test[1], clf=clf, legend=2)
+    plt.title("QSVM")
+    plt.savefig(os.path.join(plot_dir, "03.esc_quantum_svm_results.png"))
+    # plt.show()
 
